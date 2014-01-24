@@ -1,0 +1,5 @@
+Run:
+
+> python -m SimpleHTTPServer 8888 &
+
+Then point the browser to localhost:8888
