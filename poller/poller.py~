@@ -29,9 +29,9 @@ def timerLoop(db,cursor,commandString,url,iLimit):
     except:
         db.rollback()
     next_call = next_call + 1
-    #iLimit = iLimit + 1
-    #if (iLimit < 2000):
-    threading.Timer(next_call - time.time(), timerLoop,(db,cursor,commandString,url,iLimit)).start()
+    iLimit = iLimit + 1
+    if (iLimit < 2000):
+        threading.Timer(next_call - time.time(), timerLoop,(db,cursor,commandString,url,iLimit)).start()
     
 #--------------------------------------
 # Begin Script

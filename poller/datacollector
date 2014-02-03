@@ -1,0 +1,12 @@
+#!/bin/bash
+clear
+
+function dataCollector {
+   python poller.py
+}
+
+until dataCollector 2> errfile; do
+   mail -s "Data Collector crashed with exit code $?" \
+	dukeenergydisaggregation@gmail.com < errfile
+#   sleep 1
+done
