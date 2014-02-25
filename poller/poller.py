@@ -8,8 +8,10 @@ def readEgauge(uxmlurl):
     # Open the URL and parse the xml data
     try:
         response = urllib2.urlopen(uxmlurl,timeout = 15)
-    except urllib2.URLError, e:
-        return (999999999,999999999)
+    # except urllib2.URLError, e:
+    except:
+        raise
+        # return (999999999,999999999)
     html = response.read()
     root = ET.fromstring(html)
 
@@ -18,7 +20,7 @@ def readEgauge(uxmlurl):
     totalPower = float(root[1].text) + float(root[2].text)
     return (timeNumber, totalPower)
     
-def timerLoop(db,cursor,commandString,url,iLimit):
+def timerLoop(db,cursor,commandString,url):
     global next_call
     data = readEgauge(url)
     insertString = commandString % data
@@ -29,9 +31,7 @@ def timerLoop(db,cursor,commandString,url,iLimit):
     except:
         db.rollback()
     next_call = next_call + 1
-    #iLimit = iLimit + 1
-    #if (iLimit < 2000):
-    threading.Timer(next_call - time.time(), timerLoop,(db,cursor,commandString,url,iLimit)).start()
+    threading.Timer(next_call - time.time(), timerLoop,(db,cursor,commandString,url)).start()
     
 #--------------------------------------
 # Begin Script
@@ -45,11 +45,17 @@ cursor = db.cursor()
 commandString = "INSERT INTO smarthome (timestamp, power) VALUES (%s, %s)"
 
 # URL for the eGauge XML file
-url = 'http://egauge1146.egaug.es/cgi-bin/egauge?noteam'
+url = 'http://152.3.3.246/cgi-bin/egauge?noteam'
 
 #code.interact(local=locals())
 
+print("Starting poller.py...\n")
 next_call = time.time()
-i = 0
-timerLoop(db,cursor,commandString,url,i) 
-db.close
+try:
+    timerLoop(db,cursor,commandString,url)
+except:
+    db.close
+    raise
+else:
+    db.close
+    raise
