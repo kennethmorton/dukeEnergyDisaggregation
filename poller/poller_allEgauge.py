@@ -19,11 +19,11 @@ def readEgauge(uxmlurl,indices,includeTimeStamp):
     outputList = []
     
     if includeTimeStamp:
-        outputList.append('timestamp')
-#        outputList.append(int(root[0].text)
+#        outputList.append('timestamp')
+        outputList.append(int(root[0].text))
     for i in indices:
-#        outputList.append(float(root[i][2].text)
-        outputList.append(root[i].attrib['title'])
+        outputList.append(float(root[i][2].text))
+#        outputList.append(root[i].attrib['title'])
     return outputList
 
 def timerLoop(db,cursor,commandString,url,indices):
@@ -38,6 +38,7 @@ def timerLoop(db,cursor,commandString,url,indices):
     for i in range(1,6):
         data = data + readEgauge(url[i],indices[i],includeTimeStamp)
     insertString = commandString % tuple(data)
+#    print(insertString)
     print(datetime.datetime.now())
     try:
         cursor.execute(insertString)
@@ -69,7 +70,7 @@ url_egauge = [
 
 # Indices to the registers in the eGauge (as indexed in the xml file)
 #   that correspond to the labels below (which are the MySQL column names)
-indices = [ [8,9,6,7],
+indices = [ [10,11,8,9],
             [11,12,10,7,8,9],
             [9,10,11,13,14,12],
             [8,9,10,11,12],
@@ -113,8 +114,9 @@ labels = (
     "b7139_06_r_06_ef3"
 )
 
-labelString     = 'INSERT INTO b7139_smarthome (' + '%s ' * 34 + ') VALUES ('
-commandString   = labelString % labels + '%s ' * 34 + ');'
+labelString     = 'INSERT INTO smart_home (' + '%s, ' * 33 + '%s' + ') VALUES ('
+commandString   = labelString % labels + '%s, ' * 33 
+commandString   = commandString + '%s);'
 
 #url = 'http://152.3.3.246/cgi-bin/egauge?noteam'
 
