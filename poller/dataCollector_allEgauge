@@ -2,7 +2,7 @@
 clear
 
 function dataCollector {
-   python poller.py
+   python poller_allEgauge.py
 }
 
 until dataCollector 2> errfile; do
